@@ -1,0 +1,33 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arkham x Revyse · Ingeniería con agentes</title>
+<style>
+*{box-sizing:border-box;margin:0}body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f0b1a;color:#eee;height:100vh;overflow:hidden}
+.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:6vw 8vw;max-width:1100px;margin:auto}
+.s.on{display:flex;animation:f .3s}@keyframes f{from{opacity:0;transform:translateY(8px)}}
+h1{font-size:clamp(2rem,6vw,4rem);line-height:1.1}h2{font-size:clamp(1.5rem,4vw,2.6rem);color:#b48cff;margin-bottom:1.2rem}
+p,li{font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.5;color:#d8d0ea}ul{padding-left:1.2em}li{margin:.45em 0}
+.k{color:#b48cff;font-weight:600}.tag{color:#b48cff;letter-spacing:.15em;text-transform:uppercase;font-size:.85rem;margin-bottom:1rem}
+.flow{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.flow span{background:#2a1d4a;border:1px solid #6d4bd1;border-radius:8px;padding:.4rem .8rem}
+#bar{position:fixed;bottom:0;left:0;height:4px;background:#8b5cf6;transition:width .3s}
+#n{position:fixed;bottom:12px;right:16px;color:#776d90;font-size:.85rem}
+.nav{position:fixed;top:0;bottom:0;width:30%;z-index:2}#pv{left:0}#nx{right:0}
+</style></head><body>
+<div class="s"><div class="tag">Mexico Tech Week · Oct 2026 · Evento Tenet</div><h1>Revisar el código<br>antes de escribirlo</h1><p style="margin-top:1rem">Lo que aprendí de la charla de Arkham y qué podemos aplicar en Revyse</p><p style="margin-top:2rem;color:#8a80a5">Ana Castellanos</p></div>
+<div class="s"><h2>La idea central</h2><ul><li>Arkham ya no "escribe código": su equipo de ingeniería <span class="k">construye producto</span> con un harness de agentes.</li><li>Los ingenieros siguen siendo quienes <span class="k">toman las decisiones</span>.</li><li>Todo empieza con un buen <span class="k">spec</span>.</li></ul></div>
+<div class="s"><h2>1 · Spec Driven Development</h2><ul><li>El spec define <span class="k">qué</span> implementar de forma abstracta, sin revisar línea por línea.</li><li>Valida la idea antes de escribir código; elimina race conditions antes de producción.</li><li>Brainstorm + spec puede ser el <span class="k">80% del tiempo</span>; del spec al plan de ejecución ≈ 4 h. Después la ejecución corre sin fricción.</li><li>Un terminal multiplexor controla varios agentes, con subagentes de hasta 4 niveles.</li></ul></div>
+<div class="s"><h2>2 · Expertos por componente</h2><div class="flow"><span>Spec</span><span>→ Execute</span><span>→ Curate</span><span>→ PR</span></div><ul><li>Un experto por cada componente importante del repo: guarda las decisiones <span class="k">no evidentes</span> en el código (por qué esta API, librería…).</li><li><span class="k">Orquestador</span> coordina · <span class="k">Experto</span> hace cambios y logs · <span class="k">Auditor</span> valida que todo matchee el spec, sin extras.</li><li>Cada experto tiene memoria: los logs se reincorporan al terminar la épica.</li></ul></div>
+<div class="s"><h2>3 · Revisión de PR en 4 pasos</h2><ul><li><span class="k">Gate:</span> clasifica por tamaño, impacto y seguridad; genera grafo de impacto.</li><li><span class="k">Verify:</span> lint, checks, pruebas automáticas.</li><li><span class="k">Review:</span> modelo grande para PRs delicados, ligero para textos/labels. Pipelines separados de seguridad y lógica.</li><li><span class="k">Humano</span> valida que la revisión sea coherente, aprueba y hace merge.</li></ul></div>
+<div class="s"><h2>4 · Infra y QA automáticos</h2><ul><li><span class="k">Son of Anton:</span> VMs para desarrollar y validar en paralelo; un dev puede tener 5 cambios corriendo a la vez.</li><li><span class="k">Maestro (QA nocturno):</span> flujos Android, iOS y web cada noche; alerta si algo falla.</li><li><span class="k">Night Shift:</span> cada miércoles escanea dependencias vulnerables y abre un PR.</li><li><span class="k">Sentry + agente:</span> intenta arreglar errores de prod; si no puede, asigna diagnóstico al último que tocó el código.</li></ul></div>
+<div class="s"><h2>Resultados que compartieron</h2><ul><li>Errores: de <span class="k">~5/semana a 1–3/semana</span>, con muy pocas recurrencias.</li><li>Menos PRs por épica, más concentrados y revisables.</li><li>Costos: aprovechar al máximo las suscripciones incluidas antes de APIs de pago; orquestador en modelo grande, subagentes en modelos chicos.</li><li>Frontend estable: los expertos leen el design system y el spec de diseño es muy específico.</li></ul></div>
+<div class="s"><h2>Qué podemos aplicar en Revyse</h2><ul><li>Invertir más tiempo en el <span class="k">spec</span> antes de pedirle código a un agente.</li><li>Documentar las <span class="k">decisiones no obvias</span> por componente como contexto para agentes.</li><li>Resolver comentarios del reviewer IA <span class="k">antes</span> de la revisión humana.</li><li>Pipeline de PR por complejidad: modelo según riesgo, seguridad separada.</li><li>Probar QA nocturno automatizado y un escaneo semanal de dependencias.</li><li>Generar test cases con un agente sin contexto, solo con la lista de endpoints.</li></ul></div>
+<div class="s"><h2>El rol del ingeniero cambia</h2><ul><li>Pensar en producto: por qué este botón, cómo se ve en 3, 6 y 12 meses.</li><li>Habilidad clave: <span class="k">transmitir contexto</span> de forma efectiva al LLM.</li><li>Tener clara la secuencia de pasos antes de delegar.</li><li>Seguir programando para entender lo que hace el agente. Infra sigue pidiendo mucho cuidado.</li></ul></div>
+<div class="s" style="text-align:center;align-items:center"><h1>¿Preguntas?</h1><p style="margin-top:1rem">¿Por cuál empezamos en Revyse?</p></div>
+<div id="pv" class="nav"></div><div id="nx" class="nav"></div><div id="bar"></div><div id="n"></div>
+<script>
+const S=[...document.querySelectorAll('.s')];let i=+(location.hash.slice(1))||0;
+function go(k){i=Math.max(0,Math.min(S.length-1,k));S.forEach((s,j)=>s.classList.toggle('on',j==i));bar.style.width=(i+1)/S.length*100+'%';n.textContent=(i+1)+' / '+S.length;history.replaceState(0,'','#'+i)}
+onkeydown=e=>{if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key))go(i+1);if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key))go(i-1)};
+nx.onclick=()=>go(i+1);pv.onclick=()=>go(i-1);
+let x;ontouchstart=e=>x=e.touches[0].clientX;ontouchend=e=>{let d=e.changedTouches[0].clientX-x;if(Math.abs(d)>50)go(d<0?i+1:i-1)};
+go(i);
+</script></body></html>
